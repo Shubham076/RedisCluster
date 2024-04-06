@@ -1,0 +1,79 @@
+
+version: '3'
+
+networks:
+  redis-network:
+    driver: bridge
+
+services:
+  redis-1:
+    image: redis:latest
+    hostname: redis-1
+    container_name: redis-1
+    networks:
+      - redis-network
+    volumes:
+      - ./config/master.conf:/redis/redis.conf
+    command: redis-server /redis/redis.conf
+
+  redis-2:
+    image: redis:latest
+    hostname: redis-2
+    container_name: redis-2
+    networks:
+      - redis-network
+    volumes:
+      - ./config/master.conf:/redis/redis.conf
+    command: redis-server /redis/redis.conf
+
+  redis-3:
+    image: redis:latest
+    hostname: redis-3
+    container_name: redis-3
+    networks:
+      - redis-network
+    volumes:
+      - ./config/master.conf:/redis/redis.conf
+    command: redis-server /redis/redis.conf
+
+  redis-4:
+    image: redis:latest
+    hostname: redis-4
+    container_name: redis-4
+    networks:
+      - redis-network
+    volumes:
+      - ./config/replica.conf:/redis/redis.conf
+    command: redis-server /redis/redis.conf
+
+  redis-5:
+    image: redis:latest
+    hostname: redis-5
+    container_name: redis-5
+    networks:
+      - redis-network
+    volumes:
+      - ./config/replica.conf:/redis/redis.conf
+    command: redis-server /redis/redis.conf
+
+  redis-6:
+    image: redis:latest
+    hostname: redis-6
+    container_name: redis-6
+    networks:
+      - redis-network
+    volumes:
+      - ./config/replica.conf:/redis/redis.conf
+    command: redis-server /redis/redis.conf
+
+  insight:
+    image: redis/redisinsight
+    container_name: insight
+    networks:
+      - redis-network
+    ports:
+      - 5540:5540
+
+
+# once all the container start run below command on any container command 
+# command: redis-cli --cluster create redis-1:6379 redis-2:6379 redis-3:6379 redis-4:6379 redis-5:6379 redis-6:6379 --cluster-replicas 1 --cluster-yes

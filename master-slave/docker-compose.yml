@@ -1,0 +1,41 @@
+
+version: '3'
+
+networks:
+  redis-network:
+    driver: bridge
+
+services:
+  redis-master:
+    image: redis:latest
+    container_name: redis-master
+    hostname: redis-master
+    networks:
+      - redis-network
+    volumes:
+      - ./config/master.conf:/redis/redis.conf
+    command: redis-server /redis/redis.conf
+
+  redis-replica-1:
+    image: redis:latest
+    container_name: redis-replica-1
+    hostname: redis-replica-1
+    networks:
+      - redis-network
+    volumes:
+      - ./config/replica.conf:/redis/redis.conf
+    command: redis-server --replicaof redis-master 6379 --include /redis/redis.conf
+    depends_on:
+      - redis-master
+
+  redis-replica-2:
+    image: redis:latest
+    container_name: redis-replica-2
+    hostname: redis-replica-2
+    networks:
+      - redis-network
+    volumes:
+      - ./config/replica.conf:/redis/redis.conf
+    command: redis-server --replicaof redis-master 6379 --include /redis/redis.conf
+    depends_on: 
+      - redis-master
